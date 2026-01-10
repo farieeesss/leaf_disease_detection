@@ -1,0 +1,203 @@
+{
+  "Bacterial Spot": {
+    "name": "Bacterial Spot",
+    "description": "Bacterial spot is a common disease caused by Xanthomonas species that affects leaves, stems, and fruits.",
+    "treatments": [
+      "Remove and destroy infected plant parts immediately",
+      "Apply copper-based fungicides (copper hydroxide or copper sulfate)",
+      "Use bactericides containing streptomycin or oxytetracycline",
+      "Practice crop rotation to prevent disease buildup",
+      "Avoid overhead watering to reduce leaf wetness",
+      "Maintain proper spacing between plants for better air circulation",
+      "Apply treatments early in the morning when leaves are dry"
+    ],
+    "prevention": [
+      "Use disease-free seeds and transplants",
+      "Water plants at the base, not on leaves",
+      "Remove weeds that can harbor the bacteria",
+      "Sanitize garden tools between uses"
+    ]
+  },
+  "Early Blight": {
+    "name": "Early Blight",
+    "description": "Early blight is caused by the fungus Alternaria solani and typically appears on lower leaves first.",
+    "treatments": [
+      "Apply fungicides containing chlorothalonil, mancozeb, or azoxystrobin",
+      "Remove infected leaves and dispose of them properly",
+      "Apply neem oil as an organic treatment option",
+      "Use copper-based fungicides preventively",
+      "Ensure plants receive adequate nutrition (especially nitrogen)",
+      "Mulch around plants to prevent soil splash",
+      "Apply treatments every 7-10 days during favorable conditions"
+    ],
+    "prevention": [
+      "Practice crop rotation (avoid planting tomatoes in same spot for 2-3 years)",
+      "Space plants adequately for air circulation",
+      "Water at the base of plants, avoid wetting foliage",
+      "Remove and destroy infected plant debris at season end"
+    ]
+  },
+  "Late Blight": {
+    "name": "Late Blight",
+    "description": "Late blight is a serious fungal disease caused by Phytophthora infestans that can quickly destroy entire plants.",
+    "treatments": [
+      "Apply fungicides containing chlorothalonil, mancozeb, or metalaxyl",
+      "Use systemic fungicides like mefenoxam or propamocarb",
+      "Remove and destroy all infected plant parts immediately",
+      "Apply copper-based fungicides as preventive measure",
+      "Treat plants every 5-7 days during wet weather",
+      "Ensure good drainage to prevent waterlogged soil",
+      "Consider using resistant varieties if available"
+    ],
+    "prevention": [
+      "Plant resistant varieties when possible",
+      "Avoid overhead irrigation",
+      "Remove volunteer plants and nightshade weeds",
+      "Destroy all plant debris at end of season",
+      "Maintain proper spacing for air circulation"
+    ]
+  },
+  "Leaf Mold": {
+    "name": "Leaf Mold",
+    "description": "Leaf mold is caused by the fungus Passalora fulva and is common in greenhouse and high-humidity environments.",
+    "treatments": [
+      "Apply fungicides containing chlorothalonil or mancozeb",
+      "Use sulfur-based fungicides as organic option",
+      "Improve air circulation and reduce humidity",
+      "Remove infected leaves promptly",
+      "Apply neem oil treatments",
+      "Use copper fungicides preventively",
+      "Ensure proper ventilation in greenhouse settings"
+    ],
+    "prevention": [
+      "Maintain humidity below 85%",
+      "Space plants adequately for air flow",
+      "Water early in the day so leaves dry quickly",
+      "Remove lower leaves that touch the ground",
+      "Use drip irrigation instead of overhead watering"
+    ]
+  },
+  "Mosaic Virus": {
+    "name": "Mosaic Virus",
+    "description": "Mosaic virus is a viral disease that causes mottled, distorted leaves and reduced fruit production.",
+    "treatments": [
+      "Remove and destroy infected plants immediately",
+      "Control aphid populations (they spread the virus)",
+      "Use insecticidal soaps or neem oil for aphid control",
+      "Apply reflective mulches to deter aphids",
+      "There is no cure for infected plants - prevention is key",
+      "Disinfect tools after handling infected plants",
+      "Remove weeds that can harbor the virus"
+    ],
+    "prevention": [
+      "Use virus-free seeds and transplants",
+      "Control aphids and other insect vectors",
+      "Avoid smoking near plants (tobacco mosaic virus)",
+      "Wash hands before handling plants",
+      "Remove and destroy infected plants immediately"
+    ]
+  },
+  "Septoria Leaf Spot": {
+    "name": "Septoria Leaf Spot",
+    "description": "Septoria leaf spot is caused by the fungus Septoria lycopersici and creates small circular spots on leaves.",
+    "treatments": [
+      "Apply fungicides containing chlorothalonil, mancozeb, or azoxystrobin",
+      "Remove infected leaves and dispose of them",
+      "Use copper-based fungicides",
+      "Apply neem oil as organic treatment",
+      "Treat every 7-10 days during favorable conditions",
+      "Ensure plants have adequate nutrition",
+      "Mulch to prevent soil splash onto leaves"
+    ],
+    "prevention": [
+      "Practice crop rotation",
+      "Remove plant debris at end of season",
+      "Water at base of plants, avoid wetting foliage",
+      "Space plants for good air circulation",
+      "Use drip irrigation instead of overhead watering"
+    ]
+  },
+  "Spider Mites": {
+    "name": "Spider Mites",
+    "description": "Spider mites are tiny arachnids that feed on plant sap, causing stippling, yellowing, and webbing on leaves.",
+    "treatments": [
+      "Spray plants with strong water stream to dislodge mites",
+      "Apply insecticidal soap or neem oil",
+      "Use miticides containing abamectin or bifenthrin",
+      "Introduce beneficial insects like ladybugs or predatory mites",
+      "Apply horticultural oil treatments",
+      "Increase humidity around plants (mites prefer dry conditions)",
+      "Remove heavily infested leaves"
+    ],
+    "prevention": [
+      "Maintain adequate humidity levels",
+      "Regularly inspect plants for early signs",
+      "Avoid over-fertilizing (high nitrogen attracts mites)",
+      "Keep plants well-watered and healthy",
+      "Remove weeds that can harbor mites"
+    ]
+  },
+  "Target Spot": {
+    "name": "Target Spot",
+    "description": "Target spot is caused by the fungus Corynespora cassiicola and creates distinctive target-like lesions on leaves.",
+    "treatments": [
+      "Apply fungicides containing azoxystrobin, pyraclostrobin, or chlorothalonil",
+      "Remove infected leaves and plant debris",
+      "Use copper-based fungicides",
+      "Apply treatments every 7-10 days",
+      "Ensure proper plant nutrition",
+      "Improve air circulation around plants",
+      "Use neem oil as organic treatment option"
+    ],
+    "prevention": [
+      "Practice crop rotation",
+      "Remove and destroy infected plant debris",
+      "Water at base of plants",
+      "Maintain proper spacing between plants",
+      "Avoid working with plants when they are wet"
+    ]
+  },
+  "Yellow Leaf Curl Virus": {
+    "name": "Yellow Leaf Curl Virus",
+    "description": "Yellow leaf curl virus is a viral disease transmitted by whiteflies, causing yellowing and curling of leaves.",
+    "treatments": [
+      "Remove and destroy infected plants immediately",
+      "Control whitefly populations with insecticides",
+      "Use yellow sticky traps to monitor whiteflies",
+      "Apply insecticidal soaps or neem oil",
+      "Use systemic insecticides for whitefly control",
+      "There is no cure for infected plants - focus on prevention",
+      "Remove weeds that can harbor whiteflies"
+    ],
+    "prevention": [
+      "Use virus-free seeds and transplants",
+      "Control whitefly populations early",
+      "Use reflective mulches to deter whiteflies",
+      "Plant resistant varieties when available",
+      "Remove infected plants immediately to prevent spread",
+      "Use row covers to protect young plants"
+    ]
+  },
+  "healthy": {
+    "name": "Healthy",
+    "description": "Your plant appears to be healthy! Continue with good care practices.",
+    "treatments": [
+      "Continue regular watering schedule",
+      "Maintain proper fertilization",
+      "Monitor for early signs of disease",
+      "Practice good garden hygiene",
+      "Keep plants well-spaced for air circulation",
+      "Remove any dead or damaged leaves",
+      "Inspect plants regularly for pests"
+    ],
+    "prevention": [
+      "Maintain consistent watering schedule",
+      "Provide adequate nutrition",
+      "Monitor for pests and diseases",
+      "Practice crop rotation",
+      "Keep garden tools clean",
+      "Remove plant debris regularly"
+    ]
+  }
+}
+
