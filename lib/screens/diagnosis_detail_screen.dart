@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import '../models/diagnosis_model.dart';
 import '../services/disease_treatment_service.dart';
+import '../services/enhanced_model_service.dart';
+import '../widgets/treatment_card_widget.dart';
 
 class DiagnosisDetailScreen extends StatelessWidget {
   final DiagnosisModel diagnosis;
@@ -10,9 +12,11 @@ class DiagnosisDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final treatment = DiseaseTreatmentService.getTreatment(
+    // Convert disease name to treatment key
+    final treatmentKey = EnhancedModelService.getDiseaseTreatmentKey(
       diagnosis.diseaseName,
     );
+    final treatment = DiseaseTreatmentService.getTreatment(treatmentKey);
 
     return Scaffold(
       backgroundColor: const Color(0xFFFAFAFA),
@@ -83,11 +87,9 @@ class DiagnosisDetailScreen extends StatelessWidget {
             // Disease Card
             _buildDiseaseCard(),
             const SizedBox(height: 20),
-            // Treatment Card
-            if (treatment != null) _buildTreatmentCard(treatment),
-            if (treatment != null) const SizedBox(height: 20),
-            // All Predictions
-            _buildAllPredictionsCard(),
+            // Treatment Card - only show for diseased tomato leaves
+            if (treatment != null && !diagnosis.isHealthy)
+              TreatmentCardWidget(treatment: treatment),
           ],
         ),
       ),
@@ -151,7 +153,9 @@ class DiagnosisDetailScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      diagnosis.diseaseName,
+                      EnhancedModelService.formatDiseaseName(
+                        diagnosis.diseaseName,
+                      ),
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 22,
@@ -197,231 +201,4 @@ class DiagnosisDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTreatmentCard(DiseaseTreatment treatment) {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.grey.shade200, width: 1),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF10B981).withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Icon(
-                  Icons.medical_services_outlined,
-                  color: Color(0xFF10B981),
-                  size: 24,
-                ),
-              ),
-              const SizedBox(width: 12),
-              const Text(
-                'Treatment Guide',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF111827),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Text(
-            treatment.description,
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey.shade700,
-              height: 1.5,
-            ),
-          ),
-          const SizedBox(height: 24),
-          _buildTreatmentSection(
-            'Treatment Steps',
-            treatment.treatments,
-            Icons.local_hospital_outlined,
-            const Color(0xFF3B82F6),
-          ),
-          const SizedBox(height: 20),
-          _buildTreatmentSection(
-            'Prevention Tips',
-            treatment.prevention,
-            Icons.shield_outlined,
-            const Color(0xFF10B981),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTreatmentSection(
-    String title,
-    List<String> items,
-    IconData icon,
-    Color color,
-  ) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Icon(icon, size: 20, color: color),
-            const SizedBox(width: 8),
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFF111827),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        ...items.asMap().entries.map((entry) {
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 12.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: 24,
-                  height: 24,
-                  decoration: BoxDecoration(
-                    color: color.withOpacity(0.1),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Center(
-                    child: Text(
-                      title == 'Treatment Steps' ? '${entry.key + 1}' : '✓',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: color,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    entry.value,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey.shade700,
-                      height: 1.5,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
-        }),
-      ],
-    );
-  }
-
-  Widget _buildAllPredictionsCard() {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.grey.shade200, width: 1),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Icon(
-                  Icons.analytics_outlined,
-                  color: Colors.grey.shade700,
-                  size: 24,
-                ),
-              ),
-              const SizedBox(width: 12),
-              const Text(
-                'All Predictions',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF111827),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          ...diagnosis.allPredictions.map((pred) {
-            final score = (pred['score'] as double) * 100;
-            return Container(
-              margin: const EdgeInsets.only(bottom: 12),
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade50,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          pred['class'] as String,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xFF111827),
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(4),
-                          child: LinearProgressIndicator(
-                            value: score / 100,
-                            backgroundColor: Colors.grey.shade200,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              score > 50
-                                  ? const Color(0xFF10B981)
-                                  : Colors.grey.shade400,
-                            ),
-                            minHeight: 6,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Text(
-                    '${score.toStringAsFixed(1)}%',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: score > 50
-                          ? const Color(0xFF10B981)
-                          : Colors.grey.shade600,
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }),
-        ],
-      ),
-    );
-  }
 }

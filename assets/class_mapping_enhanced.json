@@ -1,0 +1,40 @@
+{
+  "categories": {
+    "non_crop": "non_crop",
+    "other_crop": "other_crop",
+    "tomato_fruit_ripe": "tomato_fruit",
+    "tomato_fruit_unripe": "tomato_fruit",
+    "tomato_leaf_bacterial_spot": "tomato_leaf",
+    "tomato_leaf_early_blight": "tomato_leaf",
+    "tomato_leaf_healthy": "tomato_leaf",
+    "tomato_leaf_late_blight": "tomato_leaf",
+    "tomato_leaf_leaf_mold": "tomato_leaf",
+    "tomato_leaf_mosaic_virus": "tomato_leaf",
+    "tomato_leaf_septoria_leaf_spot": "tomato_leaf",
+    "tomato_leaf_spider_mites": "tomato_leaf",
+    "tomato_leaf_target_spot": "tomato_leaf",
+    "tomato_leaf_yellow_leaf_curl_virus": "tomato_leaf"
+  },
+  "fruit_ripeness": [
+    "tomato_fruit_ripe",
+    "tomato_fruit_unripe"
+  ],
+  "leaf_diseases": [
+    "tomato_leaf_bacterial_spot",
+    "tomato_leaf_early_blight",
+    "tomato_leaf_healthy",
+    "tomato_leaf_late_blight",
+    "tomato_leaf_leaf_mold",
+    "tomato_leaf_mosaic_virus",
+    "tomato_leaf_septoria_leaf_spot",
+    "tomato_leaf_spider_mites",
+    "tomato_leaf_target_spot",
+    "tomato_leaf_yellow_leaf_curl_virus"
+  ],
+  "other_crops": [
+    "other_crop"
+  ],
+  "non_crops": [
+    "non_crop"
+  ]
+}

@@ -28,9 +28,11 @@ class DiagnosisStorageService {
 
       // Convert to JSON and save
       final jsonList = history.map((d) => d.toJson()).toList();
-      await prefs.setString(_diagnosisKey, json.encode(jsonList));
+      final jsonString = json.encode(jsonList);
+      await prefs.setString(_diagnosisKey, jsonString);
     } catch (e) {
       print('Error saving diagnosis: $e');
+      rethrow;
     }
   }
 
@@ -116,24 +118,5 @@ class DiagnosisStorageService {
     } catch (e) {
       print('Error deleting image file: $e');
     }
-  }
-
-  /// Get total number of diagnoses
-  static Future<int> getHistoryCount() async {
-    final history = await getHistory();
-    return history.length;
-  }
-
-  /// Get statistics
-  static Future<Map<String, int>> getStatistics() async {
-    final history = await getHistory();
-    final Map<String, int> stats = {};
-
-    for (final diagnosis in history) {
-      final disease = diagnosis.diseaseName;
-      stats[disease] = (stats[disease] ?? 0) + 1;
-    }
-
-    return stats;
   }
 }

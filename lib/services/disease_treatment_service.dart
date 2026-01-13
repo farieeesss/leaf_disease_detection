@@ -60,12 +60,4 @@ class DiseaseTreatmentService {
 
   /// Check if treatments are loaded
   static bool get isLoaded => _isLoaded;
-
-  /// Get all available disease names
-  static List<String> getAvailableDiseases() {
-    if (!_isLoaded || _treatments == null) {
-      return [];
-    }
-    return _treatments!.keys.toList();
-  }
 }

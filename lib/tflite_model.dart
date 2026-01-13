@@ -15,9 +15,9 @@ class TFLiteModel {
 
   Future<void> loadModel() async {
     try {
-      // Load class names
+      // Load enhanced class names
       final String classNamesJson = await rootBundle.loadString(
-        'assets/class_names.json',
+        'assets/class_names_enhanced.json',
       );
       final List<dynamic> classNamesList = json.decode(classNamesJson);
       _classNames = classNamesList.cast<String>();
@@ -121,17 +121,34 @@ class TFLiteModel {
       // Convert score to percentage
       final confidence = (maxScore * 100).clamp(0.0, 100.0);
 
+      // Ensure we don't access out of bounds
+      final numClasses = normalizedPredictions.length;
+      final numClassNames = _classNames.length;
+
+      // Use the minimum to avoid index out of bounds
+      final validLength = numClasses < numClassNames
+          ? numClasses
+          : numClassNames;
+
+      // Ensure maxIndex is within bounds
+      if (maxIndex >= validLength) {
+        maxIndex = validLength - 1;
+        maxScore = normalizedPredictions[maxIndex];
+      }
+
       return {
         'disease': _classNames[maxIndex],
         'confidence': confidence,
         'predictions': normalizedPredictions
             .asMap()
             .entries
+            .where((e) => e.key < validLength) // Only include valid indices
             .map((e) => {'class': _classNames[e.key], 'score': e.value})
             .toList(),
       };
-    } catch (e) {
-      print('Error predicting image: $e');
+    } catch (e, stackTrace) {
+      print('❌ Error predicting image: $e');
+      print('Stack trace: $stackTrace');
       return null;
     }
   }

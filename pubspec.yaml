@@ -51,6 +51,8 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: ^2.4.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -66,8 +68,10 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/model.tflite/model_float32.tflite
-    - assets/class_names.json
+    - assets/class_names_enhanced.json
+    - assets/class_mapping_enhanced.json
     - assets/pic/tomato.png
+    - assets/font/
     - assets/disease_treatments.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -84,3 +88,27 @@ flutter:
     - family: YatraOne
       fonts:
         - asset: assets/font/YatraOne-Regular.ttf
+
+# App Icon Configuration
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/pic/tomato.png"
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/pic/tomato.png"
+  adaptive_icon_padding: 0
+  remove_alpha_ios: true
+
+# Splash Screen Configuration
+flutter_native_splash:
+  color: "#FFFFFF"
+  image: "assets/pic/tomato.png"
+  android: true
+  ios: true
+  web: true
+  fullscreen: true
+  android_gravity: center
+  ios_content_mode: scaleAspectFit
+  android_12:
+    image: "assets/pic/tomato.png"
+    color: "#FFFFFF"

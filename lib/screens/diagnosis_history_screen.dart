@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import '../models/diagnosis_model.dart';
 import '../services/diagnosis_storage_service.dart';
+import '../services/enhanced_model_service.dart';
 import 'diagnosis_detail_screen.dart';
 
 class DiagnosisHistoryScreen extends StatefulWidget {
@@ -14,11 +15,46 @@ class DiagnosisHistoryScreen extends StatefulWidget {
 class _DiagnosisHistoryScreenState extends State<DiagnosisHistoryScreen> {
   List<DiagnosisModel> _history = [];
   bool _isLoading = true;
+  Set<String> _selectedItems = {};
+  bool _isSelectionMode = false;
 
   @override
   void initState() {
     super.initState();
     _loadHistory();
+  }
+
+  void _toggleSelectionMode() {
+    setState(() {
+      _isSelectionMode = !_isSelectionMode;
+      if (!_isSelectionMode) {
+        _selectedItems.clear();
+      }
+    });
+  }
+
+  void _toggleItemSelection(String id) {
+    setState(() {
+      if (_selectedItems.contains(id)) {
+        _selectedItems.remove(id);
+      } else {
+        _selectedItems.add(id);
+      }
+      if (_selectedItems.isEmpty) {
+        _isSelectionMode = false;
+      }
+    });
+  }
+
+  void _selectAll() {
+    setState(() {
+      if (_selectedItems.length == _history.length) {
+        _selectedItems.clear();
+        _isSelectionMode = false;
+      } else {
+        _selectedItems = _history.map((d) => d.id).toSet();
+      }
+    });
   }
 
   Future<void> _loadHistory() async {
@@ -28,6 +64,44 @@ class _DiagnosisHistoryScreenState extends State<DiagnosisHistoryScreen> {
       _history = history;
       _isLoading = false;
     });
+  }
+
+  Future<void> _deleteSelected() async {
+    if (_selectedItems.isEmpty) return;
+
+    final count = _selectedItems.length;
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text('Delete $count item${count > 1 ? 's' : ''}?'),
+        content: Text(
+          'This will permanently delete the selected diagnosis record${count > 1 ? 's' : ''}. This action cannot be undone.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      for (final id in _selectedItems) {
+        await DiagnosisStorageService.deleteDiagnosis(id);
+      }
+      setState(() {
+        _selectedItems.clear();
+        _isSelectionMode = false;
+      });
+      _loadHistory();
+    }
   }
 
   Future<void> _clearAllHistory() async {
@@ -55,6 +129,10 @@ class _DiagnosisHistoryScreenState extends State<DiagnosisHistoryScreen> {
 
     if (confirm == true) {
       await DiagnosisStorageService.clearHistory();
+      setState(() {
+        _selectedItems.clear();
+        _isSelectionMode = false;
+      });
       _loadHistory();
     }
   }
@@ -66,22 +144,48 @@ class _DiagnosisHistoryScreenState extends State<DiagnosisHistoryScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF111827)),
-          onPressed: () => Navigator.pop(context),
+          icon: Icon(
+            _isSelectionMode ? Icons.close : Icons.arrow_back,
+            color: const Color(0xFF111827),
+          ),
+          onPressed: _isSelectionMode
+              ? _toggleSelectionMode
+              : () => Navigator.pop(context),
         ),
-        title: const Text(
-          'Diagnosis History',
-          style: TextStyle(
+        title: Text(
+          _isSelectionMode
+              ? '${_selectedItems.length} selected'
+              : 'Diagnosis History',
+          style: const TextStyle(
             color: Color(0xFF111827),
             fontSize: 20,
             fontWeight: FontWeight.w600,
           ),
         ),
         actions: [
-          if (_history.isNotEmpty)
+          if (_isSelectionMode) ...[
+            IconButton(
+              icon: Icon(
+                _selectedItems.length == _history.length
+                    ? Icons.deselect
+                    : Icons.select_all,
+                color: const Color(0xFF111827),
+              ),
+              onPressed: _selectAll,
+              tooltip: _selectedItems.length == _history.length
+                  ? 'Deselect All'
+                  : 'Select All',
+            ),
+            IconButton(
+              icon: const Icon(Icons.delete_outline, color: Colors.red),
+              onPressed: _selectedItems.isEmpty ? null : _deleteSelected,
+              tooltip: 'Delete Selected',
+            ),
+          ] else if (_history.isNotEmpty)
             IconButton(
               icon: const Icon(Icons.delete_outline, color: Color(0xFF111827)),
               onPressed: _clearAllHistory,
+              tooltip: 'Clear All',
             ),
         ],
       ),
@@ -147,12 +251,21 @@ class _DiagnosisHistoryScreenState extends State<DiagnosisHistoryScreen> {
   }
 
   Widget _buildHistoryCard(DiagnosisModel diagnosis) {
+    final isSelected = _selectedItems.contains(diagnosis.id);
+    
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isSelected
+            ? const Color(0xFF10B981).withOpacity(0.05)
+            : Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade200, width: 1),
+        border: Border.all(
+          color: isSelected
+              ? const Color(0xFF10B981)
+              : Colors.grey.shade200,
+          width: isSelected ? 2 : 1,
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.04),
@@ -162,19 +275,56 @@ class _DiagnosisHistoryScreenState extends State<DiagnosisHistoryScreen> {
         ],
       ),
       child: InkWell(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => DiagnosisDetailScreen(diagnosis: diagnosis),
-            ),
-          );
+        onTap: _isSelectionMode
+            ? () => _toggleItemSelection(diagnosis.id)
+            : () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        DiagnosisDetailScreen(diagnosis: diagnosis),
+                  ),
+                );
+              },
+        onLongPress: () {
+          if (!_isSelectionMode) {
+            _toggleSelectionMode();
+          }
+          _toggleItemSelection(diagnosis.id);
         },
         borderRadius: BorderRadius.circular(16),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(
             children: [
+              // Selection checkbox
+              if (_isSelectionMode)
+                Padding(
+                  padding: const EdgeInsets.only(right: 12),
+                  child: Container(
+                    width: 24,
+                    height: 24,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: isSelected
+                            ? const Color(0xFF10B981)
+                            : Colors.grey.shade400,
+                        width: 2,
+                      ),
+                      color: isSelected
+                          ? const Color(0xFF10B981)
+                          : Colors.transparent,
+                    ),
+                    child: isSelected
+                        ? const Icon(
+                            Icons.check,
+                            color: Colors.white,
+                            size: 16,
+                          )
+                        : null,
+                  ),
+                ),
               // Image
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
@@ -235,7 +385,7 @@ class _DiagnosisHistoryScreenState extends State<DiagnosisHistoryScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      diagnosis.diseaseName,
+                      EnhancedModelService.formatDiseaseName(diagnosis.diseaseName),
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
@@ -265,8 +415,10 @@ class _DiagnosisHistoryScreenState extends State<DiagnosisHistoryScreen> {
                   ],
                 ),
               ),
-              const SizedBox(width: 8),
-              Icon(Icons.chevron_right, color: Colors.grey.shade400),
+              if (!_isSelectionMode) ...[
+                const SizedBox(width: 8),
+                Icon(Icons.chevron_right, color: Colors.grey.shade400),
+              ],
             ],
           ),
         ),

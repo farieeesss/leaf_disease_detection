@@ -42,7 +42,9 @@ class DiagnosisModel {
   }
 
   // Check if plant is healthy
-  bool get isHealthy => diseaseName.toLowerCase() == 'healthy';
+  bool get isHealthy => 
+      diseaseName.toLowerCase() == 'healthy' ||
+      diseaseName.toLowerCase() == 'tomato_leaf_healthy';
 
   // Get formatted date
   String get formattedDate {
