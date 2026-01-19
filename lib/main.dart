@@ -12,7 +12,6 @@ import 'widgets/app_bar_widget.dart';
 import 'widgets/hero_section_widget.dart';
 import 'widgets/image_section_widget.dart';
 import 'widgets/action_buttons_widget.dart';
-import 'widgets/loading_indicator_widget.dart';
 import 'widgets/disease_card_widget.dart';
 import 'widgets/treatment_card_widget.dart';
 
@@ -84,6 +83,7 @@ class _DiseaseDetectionPageState extends State<DiseaseDetectionPage>
   Map<String, dynamic>? _prediction;
   EnhancedPredictionResult? _enhancedResult;
   bool _isLoading = false;
+  String? _processingStatus;
   bool _modelLoaded = false;
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -144,6 +144,17 @@ class _DiseaseDetectionPageState extends State<DiseaseDetectionPage>
           _prediction = null;
           _enhancedResult = null;
           _isLoading = true;
+          _processingStatus = 'Preparing image...';
+        });
+
+        // Start timer for 5-second animation
+        final animationStartTime = DateTime.now();
+
+        // Delay to show initial status and let animation start smoothly
+        await Future.delayed(const Duration(milliseconds: 800));
+
+        setState(() {
+          _processingStatus = 'Processing with AI model...';
         });
 
         // Run prediction
@@ -151,16 +162,46 @@ class _DiseaseDetectionPageState extends State<DiseaseDetectionPage>
 
         if (prediction != null) {
           try {
+            setState(() {
+              _processingStatus = 'Analyzing results...';
+            });
+
             // Process with enhanced model service
             final enhancedResult = EnhancedModelService.processPrediction(
               prediction,
             );
 
-            setState(() {
-              _prediction = prediction;
-              _enhancedResult = enhancedResult;
-              _isLoading = false;
-            });
+            // Calculate elapsed time and wait to complete 5 seconds total
+            final elapsedTime = DateTime.now().difference(animationStartTime);
+            final remainingTime = const Duration(seconds: 5) - elapsedTime;
+
+            if (remainingTime.isNegative) {
+              // If already past 5 seconds, show immediately
+              setState(() {
+                _prediction = prediction;
+                _enhancedResult = enhancedResult;
+                _isLoading = false;
+                _processingStatus = null;
+              });
+            } else {
+              // Show final status message if there's enough time
+              if (remainingTime.inMilliseconds > 500) {
+                setState(() {
+                  _processingStatus = 'Finalizing results...';
+                });
+                // Wait for remaining time to complete 5 seconds
+                await Future.delayed(remainingTime);
+              } else {
+                await Future.delayed(remainingTime);
+              }
+
+              setState(() {
+                _prediction = prediction;
+                _enhancedResult = enhancedResult;
+                _isLoading = false;
+                _processingStatus = null;
+              });
+            }
 
             _animationController.forward(from: 0);
 
@@ -175,12 +216,14 @@ class _DiseaseDetectionPageState extends State<DiseaseDetectionPage>
             print('Error processing prediction: $e');
             setState(() {
               _isLoading = false;
+              _processingStatus = null;
             });
             _showErrorDialog('Error processing result: $e');
           }
         } else {
           setState(() {
             _isLoading = false;
+            _processingStatus = null;
           });
           _showErrorDialog('Failed to analyze the image. Please try again.');
         }
@@ -188,6 +231,7 @@ class _DiseaseDetectionPageState extends State<DiseaseDetectionPage>
     } catch (e) {
       setState(() {
         _isLoading = false;
+        _processingStatus = null;
       });
       _showErrorDialog('Error picking image: $e');
     }
@@ -322,7 +366,11 @@ class _DiseaseDetectionPageState extends State<DiseaseDetectionPage>
           children: [
             HeroSectionWidget(modelLoaded: _modelLoaded),
             const SizedBox(height: 32),
-            ImageSectionWidget(image: _image),
+            ImageSectionWidget(
+              image: _image,
+              isLoading: _isLoading,
+              processingStatus: _processingStatus,
+            ),
             const SizedBox(height: 24),
             ActionButtonsWidget(
               modelLoaded: _modelLoaded,
@@ -330,7 +378,6 @@ class _DiseaseDetectionPageState extends State<DiseaseDetectionPage>
               onImagePicked: _pickImage,
             ),
             const SizedBox(height: 32),
-            if (_isLoading) const LoadingIndicatorWidget(),
             if (_prediction != null && !_isLoading) ...[
               FadeTransition(
                 opacity: _fadeAnimation,
